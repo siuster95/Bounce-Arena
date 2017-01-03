@@ -21,6 +21,7 @@ public class Player : MonoBehaviour {
     private float halfradius;
     private float leftprediction, rightprediction,upprediction,downprediction;
     private Vector3 position;
+    coin[] coinarray;
 
 	// Use this for initialization
 	void Start () {
@@ -37,6 +38,13 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        if(hp<=0)
+        {
+            Application.Quit();
+        }
+        //starting values
+        coinarray = GameObject.FindObjectsOfType<coin>();
         position = this.transform.position;
         movementvector = Vector3.zero;
         leftbool = Input.GetKey(KeyCode.A);
@@ -88,6 +96,22 @@ public class Player : MonoBehaviour {
             movementvector.y -= Mathf.Abs((halfheight - arena.borderwidth - halfradius) + position.y);
         }
         this.gameObject.transform.position += movementvector;
+        //see if we are colliding with a coin 
+        this.Coinhit();
+    }
+
+    public void Coinhit()
+    {
+        for(int x =0;x<coinarray.Length;x++)
+        {
+            coin ccoin = coinarray[x];
+            //find the distance between player and coin
+            float distance = Mathf.Abs(Vector3.Distance(this.transform.position, ccoin.Location));
+            if(distance < (this.radius + ccoin.Radius))
+            {
+                Destroy(ccoin.gameObject);
+            }
+        }
     }
 
     public float Radius
