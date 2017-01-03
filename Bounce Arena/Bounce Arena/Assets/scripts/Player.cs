@@ -9,6 +9,8 @@ public class Player : MonoBehaviour {
     Arena arena;
     [SerializeField]
     float radius;
+    [SerializeField]
+    int hp;
     private bool leftbool;
     private bool rightbool;
     private bool upbool;
@@ -86,5 +88,25 @@ public class Player : MonoBehaviour {
             movementvector.y -= Mathf.Abs((halfheight - arena.borderwidth - halfradius) + position.y);
         }
         this.gameObject.transform.position += movementvector;
+    }
+
+    public float Radius
+    {
+        get
+        {
+            return radius;
+        }
+    }
+
+    public int Hp
+    {
+        get
+        {
+            return hp;
+        }
+        set
+        {
+            hp = value;
+        }
     }
 }
