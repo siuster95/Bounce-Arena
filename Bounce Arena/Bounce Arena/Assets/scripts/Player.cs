@@ -133,4 +133,12 @@ public class Player : MonoBehaviour {
             hp = value;
         }
     }
+
+    public Vector3 Position
+    {
+        get
+        {
+            return position;
+        }
+    }
 }
