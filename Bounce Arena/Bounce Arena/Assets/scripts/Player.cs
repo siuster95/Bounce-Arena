@@ -21,7 +21,8 @@ public class Player : MonoBehaviour {
     private float halfradius;
     private float leftprediction, rightprediction,upprediction,downprediction;
     private Vector3 position;
-    coin[] coinarray;
+    private Vector3[] coinposition;
+    private GameManager GameManager;
 
 	// Use this for initialization
 	void Start () {
@@ -33,7 +34,9 @@ public class Player : MonoBehaviour {
         halfwidth = arena.width/2;
         halfheight = arena.height / 2;
         halfradius = this.radius / 2;
-        
+        GameObject GameManagerGO = GameObject.Find("GameManager");
+        GameManager = GameManagerGO.GetComponent<GameManager>();
+        coinposition = GameManager.CoinLocationsg;
     }
 	
 	// Update is called once per frame
@@ -44,7 +47,6 @@ public class Player : MonoBehaviour {
             Application.Quit();
         }
         //starting values
-        coinarray = GameObject.FindObjectsOfType<coin>();
         position = this.transform.position;
         movementvector = Vector3.zero;
         leftbool = Input.GetKey(KeyCode.A);
@@ -102,14 +104,18 @@ public class Player : MonoBehaviour {
 
     public void Coinhit()
     {
-        for(int x =0;x<coinarray.Length;x++)
+
+            
+        coin ccoin = GameObject.FindObjectOfType<coin>();
+        if (ccoin != null)
         {
-            coin ccoin = coinarray[x];
             //find the distance between player and coin
             float distance = Mathf.Abs(Vector3.Distance(this.transform.position, ccoin.Location));
-            if(distance < (this.radius + ccoin.Radius))
+            if (distance < (this.radius + ccoin.Radius))
             {
                 Destroy(ccoin.gameObject);
+                GameManager.Coinspawnbool = false;
+                GameManager.CoinNumber++;
             }
         }
     }
