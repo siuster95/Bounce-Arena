@@ -119,6 +119,9 @@ public class Player : MonoBehaviour {
             {
                 Destroy(ccoin.gameObject);
                 GameManager.Coinspawnbool = false;
+                GameObject Coinicon = GameObject.Find("coin" + GameManager.AmountofCoinsIcon);
+                Coinicon.SetActive(false);
+                GameManager.AmountofCoinsIcon = GameManager.AmountofCoinsIcon - 1;
                 GameManager.CoinNumber++;
             }
         }

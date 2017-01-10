@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     GameObject PlayerGO;
     [SerializeField]
-    int AmountofCoins;
+    int amountofCoins;
     private Vector3[] CoinsLocations;
     private Vector3[] ObstacleLocations;
     private float Arenahalfwidth;
@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour {
     private float NegativeArenahalfwidth;
     private int coinNumber;
     private bool coinspawnbool;
+    private int amountofCoinsIcon;
     // Use this for initialization
     void Start () {
         //find how big the arena is 
@@ -42,7 +43,7 @@ public class GameManager : MonoBehaviour {
         NegativeArenahalfwidth = Arenahalfwidth * -1.0f;
         //make arrays
         ObstacleLocations = new Vector3[AmountofObstacle];
-        CoinsLocations = new Vector3[AmountofCoins];
+        CoinsLocations = new Vector3[amountofCoins];
         //get obstacle and coin data
         Obstacle obstacle = ObstacleGO.GetComponent<Obstacle>();
         coin coin = CoinGO.GetComponent<coin>();
@@ -51,6 +52,7 @@ public class GameManager : MonoBehaviour {
         NegativeObstaclehalfwidth = -1 * obstacle.Halfwidth;
         //instatiate number
         coinNumber = 0;
+        amountofCoinsIcon = amountofCoins;
         coinspawnbool = false;
         this.makeObstacleloc();
         this.Makecoinloc();
@@ -59,11 +61,14 @@ public class GameManager : MonoBehaviour {
             Instantiate(ObstacleGO, ObstacleLocations[z], Quaternion.identity);
         }
 
+        
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
         this.Coinspawn();
+        this.winner();
 	}
 
     void makeObstacleloc()
@@ -164,7 +169,7 @@ public class GameManager : MonoBehaviour {
     public void Makecoinloc()
     {
         //for the amount of coins
-        for(int x =0;x<AmountofCoins;x++)
+        for(int x =0;x<amountofCoins;x++)
         {
             //grab 2 test numbers using the size of arena 
             float xtestc = Random.Range(NegativeArenahalfwidth, Arenahalfwidth);
@@ -272,7 +277,7 @@ public class GameManager : MonoBehaviour {
                     }
                 }
                 //coins
-                for(int z = 0;z<AmountofCoins;z++)
+                for(int z = 0;z<amountofCoins;z++)
                 {
                     Vector3 testcoinpos = CoinsLocations[z];
                     if(testcoinpos == Vector3.zero)
@@ -316,13 +321,31 @@ public class GameManager : MonoBehaviour {
 
         public void Coinspawn()
         {
-            if(coinspawnbool == false && coinNumber<AmountofCoins)
+            if(coinspawnbool == false && coinNumber<amountofCoins)
             {
             Instantiate(CoinGO, CoinsLocations[coinNumber], Quaternion.identity);
             coinspawnbool = true;
             }
         }
-
+        
+        public void winner()
+        {
+            if(player.Hp==0)
+            {
+            GameObject ECGO = GameObject.Find("Endingcarrier");
+            endingcarriar EC = ECGO.GetComponent<endingcarriar>();
+            EC.Winner = "Shooter";
+            Application.LoadLevel("endingscene");
+        }
+            else if(coinNumber == 6)
+            {
+            GameObject ECGO = GameObject.Find("Endingcarrier");
+            endingcarriar EC = ECGO.GetComponent<endingcarriar>();
+            EC.Winner = "Runner";
+            Application.LoadLevel("endingscene");
+        }
+        
+        }
         public bool Coinspawnbool
         {
             get
@@ -354,5 +377,17 @@ public class GameManager : MonoBehaviour {
             return CoinsLocations;
         }
     }
+
+    public int AmountofCoinsIcon
+    {
+        get
+        {
+            return amountofCoinsIcon;
+        }
+        set
+        {
+            amountofCoinsIcon = value;
+        }
     }
+}
 

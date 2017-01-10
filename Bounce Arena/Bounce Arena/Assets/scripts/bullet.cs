@@ -138,6 +138,8 @@ public class bullet : MonoBehaviour {
         float distance = Vector3.Distance(this.transform.position, playerGO.transform.position);
         if(distance<(this.radius+player.Radius))
         {
+            GameObject HPicon = GameObject.Find("HP" + player.Hp);
+            HPicon.SetActive(false);
             player.Hp = player.Hp - 1;
             Destroy(this.gameObject);
         }

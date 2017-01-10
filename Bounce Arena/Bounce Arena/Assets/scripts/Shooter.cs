@@ -17,7 +17,7 @@ public class Shooter : MonoBehaviour {
     bool bool1, bool2, bool3, bool4,shootbool,reloadbool;
     int bulletcount;
     int waitseconds;
-
+    GameObject[] bullets;
     // Use this for initialization
     void Start ()
     {
@@ -36,6 +36,7 @@ public class Shooter : MonoBehaviour {
         //start off at loc1
         this.transform.position = loc1;
         offset = new Vector3(0, 0, -2.0f);
+        bullets = GameObject.FindGameObjectsWithTag("bullet");
     }
 	
 	// Update is called once per frame
@@ -104,11 +105,17 @@ public class Shooter : MonoBehaviour {
         {
             //Debug.Log(bulletcount);
             Instantiate(bullet, this.transform.position, Quaternion.identity);
-            bulletcount -= 1;
+            GameObject bulletIcon = GameObject.Find("bullet" + this.bulletcount);
+            bulletIcon.SetActive(false);
+            this.bulletcount -= 1;
+
         }
         if(reloadbool == true)
         {
             StartCoroutine(Reload());
+           
+
+            
         }
     }
 
@@ -120,5 +127,9 @@ public class Shooter : MonoBehaviour {
         //Debug.Log("finished reloading");
         shootbool = true;
         bulletcount = 6;
+       for(int x =0;x<bullets.Length;x++)
+        {
+            bullets[x].SetActive(true);
+        }
     }
 }
