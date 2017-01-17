@@ -87,18 +87,20 @@ public class GameManager : MonoBehaviour {
             {
                 //the fence, Obstacles and the player
                 //fence x test
-                if (xtest - Obstaclehalfwidth < NegativeArenahalfwidth || xtest + Obstaclehalfwidth > Arenahalfwidth)
+                if ((xtest - Obstaclehalfwidth - 2.0f) < NegativeArenahalfwidth || (xtest + Obstaclehalfwidth + 2.0f) > Arenahalfwidth)
                 {
                     xtest = Random.Range(NegativeArenahalfwidth, Arenahalfwidth);
                     posTest.x = xtest;
+                    continue;
                 }
-                else if (ytest - Obstaclehalfwidth < NegativeArenahalfheight || ytest + Obstaclehalfwidth > Arenahalfheight)
+                else if ((ytest - Obstaclehalfwidth - 2.0f) < NegativeArenahalfheight || (ytest + Obstaclehalfwidth + 2.0f) > Arenahalfheight)
                 {
                     ytest = Random.Range(NegativeArenahalfheight, Arenahalfheight);
                     posTest.y = ytest;
+                    continue;
                 }
                 //player test
-                else if ((playerradius + Obstaclehalfwidth) > Vector3.Distance(posTest, player.gameObject.transform.position))
+                else if ((playerradius + Obstaclehalfwidth + 2.0f) > Vector3.Distance(posTest, player.gameObject.transform.position))
                 {
                     //see which one(x or y) is closer and move it 
                     float xresult = Mathf.Abs(xtest - player.gameObject.transform.position.x);
@@ -107,11 +109,13 @@ public class GameManager : MonoBehaviour {
                     {
                         ytest = Random.Range(NegativeArenahalfheight, Arenahalfheight);
                         posTest.y = ytest;
+                        continue;
                     }
                     else if (yresult > xresult)
                     {
                         xtest = Random.Range(NegativeArenahalfwidth, Arenahalfwidth);
                         posTest.x = xtest;
+                        continue;
                     }
                     else if (xresult == yresult)
                     {
@@ -119,12 +123,16 @@ public class GameManager : MonoBehaviour {
                         posTest.y = ytest;
                         xtest = Random.Range(NegativeArenahalfwidth, Arenahalfwidth);
                         posTest.x = xtest;
+                        continue;
                     }
                 }
                 //Obstacle check
+                int ycounter = 0; ;
                 for (int y = 0; y < ObstacleLocations.Length; y++)
                 {
-                    Vector3 Vector3test = ObstacleLocations[x];
+                    ycounter = y;
+                    Vector3 Vector3test = new Vector3(0.0f, 0.0f, 0.0f);
+                    Vector3test = ObstacleLocations[y];
                     if (Vector3test == Vector3.zero)
                     {
 
@@ -132,7 +140,8 @@ public class GameManager : MonoBehaviour {
                     else
                     {
                         //check the distance
-                        if (Obstaclehalfwidth * 2 > Vector3.Distance(posTest, Vector3test))
+
+                        if ((Obstaclehalfwidth * 2 + 2.0f) > Vector3.Distance(posTest, Vector3test))
                         {
                             //see which one(x or y) is closer and move it 
                             float xresult2 = Mathf.Abs(xtest - Vector3test.x);
@@ -141,11 +150,13 @@ public class GameManager : MonoBehaviour {
                             {
                                 ytest = Random.Range(NegativeArenahalfheight, Arenahalfheight);
                                 posTest.y = ytest;
+                                break;
                             }
                             else if (yresult2 > xresult2)
                             {
                                 xtest = Random.Range(NegativeArenahalfwidth, Arenahalfwidth);
                                 posTest.x = xtest;
+                               break;
                             }
                             else if (xresult2 == yresult2)
                             {
@@ -153,12 +164,16 @@ public class GameManager : MonoBehaviour {
                                 posTest.y = ytest;
                                 xtest = Random.Range(NegativeArenahalfwidth, Arenahalfwidth);
                                 posTest.x = xtest;
+                                break;
                             }
                         }
                     }
                 }
-                clear = true;
-                ObstacleLocations[x] = posTest;
+                if (ycounter == this.AmountofObstacle - 1)
+                {
+                    clear = true;
+                    ObstacleLocations[x] = posTest;
+                }
             }
 
 
@@ -182,16 +197,18 @@ public class GameManager : MonoBehaviour {
                 //arena 
 
                 //test x loc
-                if(xtestc-Coinradius < NegativeArenahalfwidth || xtestc + Coinradius > Arenahalfwidth)
+                if(xtestc-Coinradius - 3f < NegativeArenahalfwidth || xtestc + Coinradius +3f > Arenahalfwidth)
                 {
                     xtestc = Random.Range(NegativeArenahalfwidth, Arenahalfwidth);
                     testposc.x = xtestc;
+                    continue;
                 }
                 //test y loc
-                else if (ytestc - Coinradius < NegativeArenahalfheight || ytestc + Coinradius > Arenahalfheight)
+                else if (ytestc - Coinradius - 3f < NegativeArenahalfheight || ytestc + Coinradius + 3f > Arenahalfheight)
                 {
                     ytestc = Random.Range(NegativeArenahalfheight, Arenahalfheight);
                     testposc.y = ytestc;
+                    continue;
                 }
 
                 //obstacles
@@ -224,7 +241,7 @@ public class GameManager : MonoBehaviour {
                         }
                         Vector3 nearpoint = new Vector3(displacement.x + Obstaclevec3test.x, displacement.y + Obstaclevec3test.y, -2.0f);
                         //see if the distance between the closest point and the center of the coin is less then coin radius
-                        if (Coinradius > Vector3.Distance(testposc, nearpoint))
+                        if (Coinradius +3.0f > Vector3.Distance(testposc, nearpoint))
                         {
                             //see which is closer x or y 
                             float xresult3 = Mathf.Abs(xtestc - Obstaclevec3test.x);
@@ -233,11 +250,13 @@ public class GameManager : MonoBehaviour {
                             {
                                 ytestc = Random.Range(NegativeArenahalfheight, Arenahalfheight);
                                 testposc.y = ytestc;
+                                break;
                             }
                             else if (yresult3 > xresult3)
                             {
                                 xtestc = Random.Range(NegativeArenahalfwidth, Arenahalfwidth);
                                 testposc.x = xtestc;
+                                break;
                             }
                             else if (xresult3 == yresult3)
                             {
@@ -245,6 +264,7 @@ public class GameManager : MonoBehaviour {
                                 testposc.y = ytestc;
                                 xtestc = Random.Range(NegativeArenahalfwidth, Arenahalfwidth);
                                 testposc.x = xtestc;
+                                break;
                             }
                         }
                     }
@@ -252,7 +272,7 @@ public class GameManager : MonoBehaviour {
 
                 //player
                 //check the distance and see if it is bigger then the added radius of the player and coin
-                if(Coinradius+playerradius>Vector3.Distance(testposc,player.transform.position))
+                if(Coinradius+playerradius +2.0f>Vector3.Distance(testposc,player.transform.position))
                 {
                     //check the x and y again
                     float xresult4 = Mathf.Abs(testposc.x - player.transform.position.x);
@@ -262,11 +282,13 @@ public class GameManager : MonoBehaviour {
                     {
                         xtestc = Random.Range(NegativeArenahalfwidth, Arenahalfwidth);
                         testposc.x = xtestc;
+                        continue;
                     }
                     if(yresult4>xresult4)
                     {
                         ytestc = Random.Range(NegativeArenahalfheight, Arenahalfheight);
                         testposc.y = ytestc;
+                        continue;
                     }
                     if(xresult4==yresult4)
                     {
@@ -274,19 +296,23 @@ public class GameManager : MonoBehaviour {
                         testposc.x = xtestc;
                         ytestc = Random.Range(NegativeArenahalfheight, Arenahalfheight);
                         testposc.y = ytestc;
+                        continue;
                     }
                 }
+                int zcounter = 0;
                 //coins
                 for(int z = 0;z<amountofCoins;z++)
                 {
-                    Vector3 testcoinpos = CoinsLocations[z];
+                    zcounter = z;
+                    Vector3 testcoinpos = Vector3.zero;
+                     testcoinpos = CoinsLocations[z];
                     if(testcoinpos == Vector3.zero)
                     {
 
                     }
                     else//it has a value, it exist
                     {
-                        if(Coinradius * 2 > Vector3.Distance(testposc,testcoinpos))
+                        if(Coinradius * 2 + 2.0f > Vector3.Distance(testposc,testcoinpos))
                         {
                             //check the x and y again
                             float xresult5 = Mathf.Abs(testposc.x - testcoinpos.x);
@@ -296,11 +322,13 @@ public class GameManager : MonoBehaviour {
                             {
                                 xtestc = Random.Range(NegativeArenahalfwidth, Arenahalfwidth);
                                 testposc.x = xtestc;
+                                continue;
                             }
                             if (yresult5 > xresult5)
                             {
                                 ytestc = Random.Range(NegativeArenahalfheight, Arenahalfheight);
                                 testposc.y = ytestc;
+                                continue;
                             }
                             if (xresult5 == yresult5)
                             {
@@ -308,10 +336,12 @@ public class GameManager : MonoBehaviour {
                                 testposc.x = xtestc;
                                 ytestc = Random.Range(NegativeArenahalfheight, Arenahalfheight);
                                 testposc.y = ytestc;
+                                continue;
                             }
                         }
                     }
                 }
+                if(zcounter == this.amountofCoinsIcon-1)
                 CoinsLocations[x] = testposc;
                 clear = true;
                 }
@@ -335,6 +365,7 @@ public class GameManager : MonoBehaviour {
             GameObject ECGO = GameObject.Find("Endingcarrier");
             endingcarriar EC = ECGO.GetComponent<endingcarriar>();
             EC.Winner = "Shooter";
+            EC.Runnerwins++;
             Application.LoadLevel("endingscene");
         }
             else if(coinNumber == 6)
@@ -342,6 +373,7 @@ public class GameManager : MonoBehaviour {
             GameObject ECGO = GameObject.Find("Endingcarrier");
             endingcarriar EC = ECGO.GetComponent<endingcarriar>();
             EC.Winner = "Runner";
+            EC.Shooterwins++;
             Application.LoadLevel("endingscene");
         }
         

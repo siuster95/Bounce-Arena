@@ -162,19 +162,19 @@ public class Player : MonoBehaviour {
             bool onbottom = false;
             bool onleft = false;
             bool onright = false;
-            if((this.position.x+this.radius)>(Obstacletest.Location.x-Obstacletest.Halfwidth+.05) && (this.position.x-this.radius)<(Obstacletest.Location.x+Obstacletest.Halfwidth-.05)&&this.position.y>Obstacletest.Location.y)
+            if((this.position.x+this.radius)>(Obstacletest.Location.x-Obstacletest.Halfwidth+.1f) && (this.position.x-this.radius)<(Obstacletest.Location.x+Obstacletest.Halfwidth-.1f)&&this.position.y>Obstacletest.Location.y)
             {
                 ontop = true;
             }
-            if ((this.position.x+this.radius) > (Obstacletest.Location.x - Obstacletest.Halfwidth + .05) && (this.position.x-this.radius) < (Obstacletest.Location.x + Obstacletest.Halfwidth-.05) && this.position.y < Obstacletest.Location.y)
+            if ((this.position.x+this.radius) > (Obstacletest.Location.x - Obstacletest.Halfwidth+.1f) && (this.position.x-this.radius) < (Obstacletest.Location.x + Obstacletest.Halfwidth-.1f) && this.position.y < Obstacletest.Location.y)
             {
                 onbottom = true;
             }
-            if((this.position.y+this.radius)>(Obstacletest.Location.y-Obstacletest.Halfwidth+.05)&&((this.position.y-this.radius)<(Obstacletest.Location.y+Obstacletest.Halfwidth-.05))&&this.position.x>Obstacletest.Location.x)
+            if((this.position.y+this.radius)>(Obstacletest.Location.y-Obstacletest.Halfwidth+.1f)&&((this.position.y-this.radius)<(Obstacletest.Location.y+Obstacletest.Halfwidth-.1f))&&this.position.x>Obstacletest.Location.x)
             {
                 onright = true;
             }
-            if ((this.position.y + this.radius) > (Obstacletest.Location.y - Obstacletest.Halfwidth+.05) && ((this.position.y - this.radius) < (Obstacletest.Location.y + Obstacletest.Halfwidth-.05)) && this.position.x < Obstacletest.Location.x)
+            if ((this.position.y + this.radius) > (Obstacletest.Location.y - Obstacletest.Halfwidth+.1f) && ((this.position.y - this.radius) < (Obstacletest.Location.y + Obstacletest.Halfwidth-.1f)) && this.position.x < Obstacletest.Location.x)
             {
                 onleft = true;
             }

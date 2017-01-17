@@ -16,6 +16,7 @@ public class Shooter : MonoBehaviour {
     Vector3 loc1, loc2, loc3, loc4,offset,mousepos;
     bool bool1, bool2, bool3, bool4,shootbool,reloadbool;
     int bulletcount;
+    [SerializeField]
     int waitseconds;
     GameObject[] bullets;
     // Use this for initialization
@@ -32,7 +33,6 @@ public class Shooter : MonoBehaviour {
         shootbool = true;
         reloadbool = false;
         bulletcount = 6;
-        waitseconds = 6;
         //start off at loc1
         this.transform.position = loc1;
         offset = new Vector3(0, 0, -2.0f);

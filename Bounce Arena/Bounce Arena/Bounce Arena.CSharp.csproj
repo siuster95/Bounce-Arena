@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\GameManager.cs" />
+    <Compile Include="Assets\OAmanager.cs" />
     <Compile Include="Assets\Obstacle.cs" />
     <Compile Include="Assets\coin.cs" />
     <Compile Include="Assets\ending.cs" />
