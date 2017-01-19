@@ -6,12 +6,15 @@ public class ending : MonoBehaviour {
     Button button;
     Text text;
     endingcarriar EC;
+    GameManager GM;
     // Use this for initialization
     void Start () {
         button = GameObject.Find("Quitbutton").GetComponent<Button>();
         GameObject ECGO = GameObject.Find("Endingcarrier");
         EC = ECGO.GetComponent<endingcarriar>();
         text = GameObject.Find("Quittext").GetComponent<Text>();
+        GameObject GMGO = GameObject.Find("GameManager");
+        GM = GMGO.GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -36,6 +39,9 @@ public class ending : MonoBehaviour {
 
     public void nextRound()
     {
+        GM.CoinNumber = 0;
+        GM.Coinspawnbool = false;
+        GM.Obstaclespawn = false;
         Application.LoadLevel("test");
     }
 }

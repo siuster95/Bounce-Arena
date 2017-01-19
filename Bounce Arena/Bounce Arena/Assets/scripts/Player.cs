@@ -11,6 +11,14 @@ public class Player : MonoBehaviour {
     float radius;
     [SerializeField]
     int hp;
+    [SerializeField]
+    int speedboostcounter;
+    [SerializeField]
+    float waitseconds;
+    [SerializeField]
+    float waitsecondsreload;
+    [SerializeField]
+    float speedincrease;
     private bool leftbool;
     private bool rightbool;
     private bool upbool;
@@ -24,7 +32,8 @@ public class Player : MonoBehaviour {
     private Vector3[] coinposition;
     private GameManager GameManager;
     private Obstacle[] ObstaclesArray;
-
+    private float speednormal;
+    private bool speedboostbool;
 	// Use this for initialization
 	void Start () {
         leftbool = false;
@@ -38,7 +47,8 @@ public class Player : MonoBehaviour {
         GameObject GameManagerGO = GameObject.Find("GameManager");
         GameManager = GameManagerGO.GetComponent<GameManager>();
         coinposition = GameManager.CoinLocationsg;
-        
+        speednormal = speed;
+        speedboostbool = true;
     }
 	
 	// Update is called once per frame
@@ -104,6 +114,14 @@ public class Player : MonoBehaviour {
         this.gameObject.transform.position += movementvector;
         //see if we are colliding with a coin 
         this.Coinhit();
+        if(this.speedboostbool == true && Input.GetKeyDown(KeyCode.Space)&&speedboostcounter>0)
+        {
+            StartCoroutine(Speedboost());
+        }
+        if(speedboostcounter == 0)
+        {
+            StartCoroutine(speedboostreload());
+        }
     }
 
     public void Coinhit()
@@ -215,6 +233,20 @@ public class Player : MonoBehaviour {
         return Movement;
     }
 
+    IEnumerator Speedboost()
+    {
+        this.speed = this.speed + speedincrease;
+        this.speedboostcounter = this.speedboostcounter - 1;
+        yield return new WaitForSeconds(waitseconds);
+        this.speed = this.speednormal;
+    }
+    IEnumerator speedboostreload()
+    {
+        speedboostbool = false;
+        yield return new WaitForSeconds(waitsecondsreload);
+        this.speedboostcounter = 3;
+        speedboostbool = true;
+    }
     public float Radius
     {
         get

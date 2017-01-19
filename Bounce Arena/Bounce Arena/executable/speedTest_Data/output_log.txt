@@ -1,0 +1,42 @@
+Iniittilale eengine versrion: 5.2.5f1 (ad2d0338e2486
+8e248)
+GfxDevevice: creating vici ce client; thread=d1
+Dirrcect3D
+  
+  Version:  Directct3D 11.0 [lel 11.0]] 
+   Renderrer: Intel(R) HD Graaphics 4600 (ID=0x416)
+
+    Vendor:   Intel
+
+     VRAM  :     128
+ MB
+Begin MonoManager ReloadAssembly
+Begin MonoManager ReloadAssembly
+PlatfPratform asly: C:\Users\Johnny\Documents\Boun\ce Arena git\Bounce Arena\Bena\Bounce a\executable\speedTest_Data\Manta\MaUnityEngine.dll nthis mestage  s harmless)harLoads)
+g Loadierg CJohnny\Documny\sDocunce Arsna git\BoAnce Arena\BounceeArena\axecutable\spee\eTesecuData\M\speedTest_DyEngine.dlld\Unnto yEngty ChilldinDomain
+ty Child Domain
+Platloam aosmemably: C:: UCerUs\rohnny\nDocumenmtntsBouuncce Arrena gittBoBounce AenarBouncBounce AAreena\executableb\speeedTTest_Dataa\Managged\Assesbly-CShy-CSharp.dll (thmis messiage ris har
+mless)
+oadiLo C:\Us er\s\eJohnnynny\cumeumenss\Bouunce AArene git\itBouncee Are aArenace Aunce rrena\executablle\spedTest_DaDta\Mannaged\\AsseAbssembhay-CShal into  nint Chold Ditymain
+d Domain
+Plalaftrf arm assembly: C:\Users\nyJDocnumentcumentnce Arena git\Bo git\Buunce Arena\Boonce ArAeraena\exeabltablepspedTdese_Data\ta\MaanagedUnity\ngine.EnginU.UI.dl  (thiis messssgegeis harmrmless)
+
+LLoading C\\Users\Johohnn\y\Domentent\s\Boun AreAre nat\BounBouce Arenna\BouncenArena\executaecbla\speedpeedTeDsta_MDatae\ManityEd\UnnityEndgi nne.UUIity ChildoD manitn
+ Child Domain
+PlaPfolm atform asse:mbsly: C:\UsyeDos\umehnts\Bounce Arena git\ABounce Arena\Bounce aArouncaeexecuta\lexecutables\speedTeanaged\UnitnyEngine.Nyetwone.Netwolr kihng.dll (tehiish rmessage
+ is harmleoas)
+ng C:\Uasers\Johnnyr\DocumnenDtsumBnou\Bcounce aArena git\Bourena Arenac\ Aounce Arena\exeecuptables\speed\Test_Datan\Managied.\UniotyiEngine into Unity ChlilidtoDUnmain
+Child Domain
+Plltaotrm asasemblyy ::\C:sers\Jo\Joh\noncuments\Bounce Are nra aggit\\Buncn Ae nA\Bonan\e Aunce Arexecutable\ble\speedTeData\Mtnaged\Systemystem.Corl.dl ((this message is hharmless)
+- Completed rel-ad, mpleted r8eslconds
+, in  0.227 seconds
+desktop: 1366x768 60Hz; virtual: 3286x1080 at -1920,0
+desktop: 1366x768 60Hz; virtual: 3286x1080 at -1920,0
+<RI> Ini<iRI> Ing inplit.
+zing input.
+<<RI> Inptutn iializedl
+zed.
+<RI> Initialized touch support.
+Platform assembly: C:\Users\Johnny\Documents\Bounce Arena git\Bounce Arena\Bounce Arena\executable\speedTest_Data\Managed\System.dll (this message is harmless)
+<RI> Initialized touch support.
+Platform assembly: C:\Users\Johnny\Documents\Bounce Arena git\Bounce Arena\Bounce Arena\executable\speedTest_Data\Managed\System.dll (this message is harmless)
