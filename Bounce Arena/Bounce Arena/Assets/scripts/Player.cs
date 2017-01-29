@@ -27,11 +27,13 @@ public class Player : MonoBehaviour {
     private float halfwidth;
     private float halfheight;
     private float halfradius;
+    private bool reloadbool;
     private float leftprediction, rightprediction,upprediction,downprediction;
     private Vector3 position;
     private Vector3[] coinposition;
     private GameManager GameManager;
     private Obstacle[] ObstaclesArray;
+    GameObject[] speedboostcounters;
     private float speednormal;
     private bool speedboostbool;
 	// Use this for initialization
@@ -45,10 +47,12 @@ public class Player : MonoBehaviour {
         halfheight = arena.height / 2;
         halfradius = this.radius / 2;
         GameObject GameManagerGO = GameObject.Find("GameManager");
+        speedboostcounters = GameObject.FindGameObjectsWithTag("speedcounter");
         GameManager = GameManagerGO.GetComponent<GameManager>();
         coinposition = GameManager.CoinLocationsg;
         speednormal = speed;
         speedboostbool = true;
+        reloadbool = false;
     }
 	
 	// Update is called once per frame
@@ -114,14 +118,24 @@ public class Player : MonoBehaviour {
         this.gameObject.transform.position += movementvector;
         //see if we are colliding with a coin 
         this.Coinhit();
-        if(this.speedboostbool == true && Input.GetKeyDown(KeyCode.Space)&&speedboostcounter>0)
+        if (speedboostcounter == 0 && reloadbool == false && speedboostbool == true)
         {
-            StartCoroutine(Speedboost());
+            reloadbool = true;
+            speedboostbool = false;
         }
-        if(speedboostcounter == 0)
+        if ( Input.GetKeyDown(KeyCode.Space))
         {
+            if (this.speedboostbool == true && speedboostcounter > 0)
+            {
+                StartCoroutine(Speedboost());
+            }
+        }
+        if(reloadbool == true && speedboostbool == false)
+        {
+            reloadbool = false;
             StartCoroutine(speedboostreload());
         }
+        Debug.Log(speedboostcounter);
     }
 
     public void Coinhit()
@@ -235,17 +249,22 @@ public class Player : MonoBehaviour {
 
     IEnumerator Speedboost()
     {
+        GameObject speedboostcountericon = GameObject.Find("Speed" + speedboostcounter);
+        speedboostcountericon.SetActive(false);
+        this.speedboostcounter -= 1;
         this.speed = this.speed + speedincrease;
-        this.speedboostcounter = this.speedboostcounter - 1;
         yield return new WaitForSeconds(waitseconds);
         this.speed = this.speednormal;
     }
     IEnumerator speedboostreload()
     {
-        speedboostbool = false;
         yield return new WaitForSeconds(waitsecondsreload);
         this.speedboostcounter = 3;
         speedboostbool = true;
+        for(int x =0;x<speedboostcounters.Length;x++)
+        {
+            speedboostcounters[x].SetActive(true);
+        }
     }
     public float Radius
     {

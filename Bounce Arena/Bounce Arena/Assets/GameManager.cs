@@ -295,14 +295,14 @@ public class GameManager : MonoBehaviour {
                 //arena 
 
                 //test x loc
-                if(xtestc-Coinradius - 7f < NegativeArenahalfwidth || xtestc + Coinradius +7f > Arenahalfwidth)
+                if(xtestc-Coinradius - 3f < NegativeArenahalfwidth || xtestc + Coinradius +3f > Arenahalfwidth)
                 {
                     xtestc = Random.Range(NegativeArenahalfwidth, Arenahalfwidth);
                     testposc.x = xtestc;
                     continue;
                 }
                 //test y loc
-                else if (ytestc - Coinradius - 7f < NegativeArenahalfheight || ytestc + Coinradius + 7f > Arenahalfheight)
+                else if (ytestc - Coinradius - 3f < NegativeArenahalfheight || ytestc + Coinradius + 3f > Arenahalfheight)
                 {
                     ytestc = Random.Range(NegativeArenahalfheight, Arenahalfheight);
                     testposc.y = ytestc;
@@ -341,7 +341,7 @@ public class GameManager : MonoBehaviour {
                         }
                         Vector3 nearpoint = new Vector3(displacement.x + Obstaclevec3test.x, displacement.y + Obstaclevec3test.y, -2.0f);
                         //see if the distance between the closest point and the center of the coin is less then coin radius
-                        if (Coinradius +3.0f > Vector3.Distance(testposc, nearpoint))
+                        if (Coinradius +2.0f > Vector3.Distance(testposc, nearpoint))
                         {
                             //see which is closer x or y 
                             float xresult3 = Mathf.Abs(xtestc - Obstaclevec3test.x);
