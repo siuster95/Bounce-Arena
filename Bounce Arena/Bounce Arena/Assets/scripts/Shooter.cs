@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Shooter : MonoBehaviour {
 
@@ -13,12 +14,20 @@ public class Shooter : MonoBehaviour {
     GameObject place4;
     [SerializeField]
     GameObject bullet;
+    [SerializeField]
+    float initabilitytimer;
+    [SerializeField]
+    GameObject timer;
+    [SerializeField]
+    float cooldowntimer;
     Vector3 loc1, loc2, loc3, loc4,offset,mousepos;
-    bool bool1, bool2, bool3, bool4,shootbool,reloadbool;
+    bool bool1, bool2, bool3, bool4,shootbool,reloadbool,abilitybool,abilityfiredbool,cooldownbool;
     int bulletcount;
     [SerializeField]
     int waitseconds;
     GameObject[] bullets;
+    private Image timerimage;
+    float abilitytime;
     // Use this for initialization
     void Start ()
     {
@@ -30,13 +39,18 @@ public class Shooter : MonoBehaviour {
         bool2 = false;
         bool3 = false;
         bool4 = false;
+        abilitybool = false;
+        abilityfiredbool = false;
+        cooldownbool = false;
         shootbool = true;
+        abilitytime = initabilitytimer;
         reloadbool = false;
         bulletcount = 6;
         //start off at loc1
         this.transform.position = loc1;
         offset = new Vector3(0, 0, -2.0f);
         bullets = GameObject.FindGameObjectsWithTag("bullet");
+        timerimage = timer.GetComponent<Image>();
     }
 	
 	// Update is called once per frame
@@ -94,14 +108,14 @@ public class Shooter : MonoBehaviour {
         var angle = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle);
 
-        if (bulletcount <= 0 && shootbool == true)
+        if (bulletcount <= 0 && shootbool == true && abilitybool == false)
         {
             shootbool = false;
             reloadbool = true;
         }
 
         //Shooting
-        if (Input.GetMouseButtonDown(0) && shootbool ==true)
+        if (Input.GetMouseButtonDown(0) && shootbool ==true && abilitybool == false)
         {
             //Debug.Log(bulletcount);
             Instantiate(bullet, this.transform.position, Quaternion.identity);
@@ -110,12 +124,40 @@ public class Shooter : MonoBehaviour {
             this.bulletcount -= 1;
 
         }
+        //infinite bullet shooting
+        else if(Input.GetMouseButtonDown(0)&&abilitybool == true)
+        {
+            Instantiate(bullet, this.transform.position, Quaternion.identity);
+        }
+        //reload
         if(reloadbool == true)
         {
-            StartCoroutine(Reload());
-           
-
+            StartCoroutine(Reload());    
+        }
+        //ability timer
+        if(abilitybool==true&&cooldownbool == false)
+        {
+            abilitytime = abilitytime - Time.deltaTime;
+            if(abilitytime>0.0f)
+            {
+                timerimage.fillAmount = abilitytime / initabilitytimer;
+            }
+            else
+            {
+                cooldownbool = true;
+                abilitytime = initabilitytimer;
+            }
             
+        }
+        
+        //activate ability
+        if(abilitybool == false && Input.GetMouseButtonDown(1)&&cooldownbool==false)
+         {
+            abilitybool = true;
+         }
+        if(cooldownbool == true && abilitybool == true)
+        {
+            StartCoroutine(Cooldown());
         }
     }
 
@@ -132,4 +174,14 @@ public class Shooter : MonoBehaviour {
             bullets[x].SetActive(true);
         }
     }
+
+    IEnumerator Cooldown()
+    {
+        abilitybool = false;
+        yield return new WaitForSeconds(cooldowntimer);
+        timerimage.fillAmount = 1;
+        cooldownbool = false;
+    }
+
+
 }
