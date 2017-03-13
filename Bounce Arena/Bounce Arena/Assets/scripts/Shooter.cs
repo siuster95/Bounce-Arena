@@ -17,17 +17,21 @@ public class Shooter : MonoBehaviour {
     [SerializeField]
     float initabilitytimer;
     [SerializeField]
+    float initshadowclonetimer;
+    [SerializeField]
     GameObject timer;
     [SerializeField]
     float cooldowntimer;
     Vector3 loc1, loc2, loc3, loc4,offset,mousepos;
-    bool bool1, bool2, bool3, bool4,shootbool,reloadbool,abilitybool,abilityfiredbool,cooldownbool;
+    bool bool1, bool2, bool3, bool4,shootbool,reloadbool,infiniteshooterbool,infinteactive,infinitecooldownbool,shadowclonebool,shadowclonepressed,shadowcloneactive,shadowclonecooldown;
     int bulletcount;
     [SerializeField]
     int waitseconds;
+    int position;
     GameObject[] bullets;
     private Image timerimage;
-    float abilitytime;
+    float abilitytime,shadowclonetime;
+    GameManager GM;
     // Use this for initialization
     void Start ()
     {
@@ -39,128 +43,161 @@ public class Shooter : MonoBehaviour {
         bool2 = false;
         bool3 = false;
         bool4 = false;
-        abilitybool = false;
-        abilityfiredbool = false;
-        cooldownbool = false;
         shootbool = true;
         abilitytime = initabilitytimer;
         reloadbool = false;
         bulletcount = 6;
         //start off at loc1
         this.transform.position = loc1;
+        position = 1;
         offset = new Vector3(0, 0, -2.0f);
         bullets = GameObject.FindGameObjectsWithTag("bullet");
         timerimage = timer.GetComponent<Image>();
+        GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+        shadowclonebool = GM.Shadowclones;
+        shadowclonepressed = false;
+        shadowcloneactive = false;
+        shadowclonecooldown = false;
+        shadowclonetime = initshadowclonetimer;
+        infiniteshooterbool = GM.InfiniteShooter;
+        infinteactive = false;
+        infinitecooldownbool = false;
+
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
-        //move the character around with keyboard input
-        //see if any of the buttons are being held on too
-        if(bool1==false&&bool2==false&&bool3==false&&bool4==false)
+        if (GM.Gobool == false)
         {
-            if(Input.GetKeyDown(KeyCode.LeftArrow))
+            //move the character around with keyboard input
+            //see if any of the buttons are being held on too
+            if (bool1 == false && bool2 == false && bool3 == false && bool4 == false && shadowcloneactive == false)
             {
-                bool1 = true;
-                this.transform.position = loc1;
+                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    bool1 = true;
+                    this.transform.position = loc1;
+                    position = 1;
+                }
+                else if (Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    bool2 = true;
+                    this.transform.position = loc2;
+                    position = 2;
+                }
+                else if (Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    bool3 = true;
+                    this.transform.position = loc3;
+                    position = 3;
+                }
+                else if (Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    bool4 = true;
+                    this.transform.position = loc4;
+                    position = 4;
+                }
             }
-            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            //when they are released, turn them back to false
+            if (Input.GetKeyUp(KeyCode.LeftArrow))
             {
-                bool2 = true;
-                this.transform.position = loc2;
+                bool1 = false;
             }
-            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            if (Input.GetKeyUp(KeyCode.DownArrow))
             {
-                bool3 = true;
-                this.transform.position = loc3;
+                bool2 = false;
             }
-            else if (Input.GetKeyDown(KeyCode.UpArrow))
+            if (Input.GetKeyUp(KeyCode.RightArrow))
             {
-                bool4 = true;
-                this.transform.position = loc4;
+                bool3 = false;
             }
-        }
-        //when they are released, turn them back to false
-        if(Input.GetKeyUp(KeyCode.LeftArrow))
-        {
-            bool1 = false;
-        }
-        if (Input.GetKeyUp(KeyCode.DownArrow))
-        {
-            bool2 = false;
-        }
-        if (Input.GetKeyUp(KeyCode.RightArrow))
-        {
-            bool3 = false;
-        }
-        if (Input.GetKeyUp(KeyCode.UpArrow))
-        {
-            bool4 = false;
-        }
+            if (Input.GetKeyUp(KeyCode.UpArrow))
+            {
+                bool4 = false;
+            }
 
-        //rotation
-        mousepos = Input.mousePosition;
-        mousepos = Camera.main.ScreenToWorldPoint(mousepos);
-        mousepos.z = -2.0f;
-        offset.x = mousepos.x - this.transform.position.x;
-        offset.y = mousepos.y - this.transform.position.y; 
-        var angle = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, angle);
+            //rotation
+            mousepos = Input.mousePosition;
+            mousepos = Camera.main.ScreenToWorldPoint(mousepos);
+            mousepos.z = -2.0f;
+            offset.x = mousepos.x - this.transform.position.x;
+            offset.y = mousepos.y - this.transform.position.y;
+            var angle = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, 0, angle);
 
-        if (bulletcount <= 0 && shootbool == true && abilitybool == false)
-        {
-            shootbool = false;
-            reloadbool = true;
-        }
-
-        //Shooting
-        if (Input.GetMouseButtonDown(0) && shootbool ==true && abilitybool == false)
-        {
-            //Debug.Log(bulletcount);
-            Instantiate(bullet, this.transform.position, Quaternion.identity);
-            GameObject bulletIcon = GameObject.Find("bullet" + this.bulletcount);
-            bulletIcon.SetActive(false);
-            this.bulletcount -= 1;
-
-        }
-        //infinite bullet shooting
-        else if(Input.GetMouseButtonDown(0)&&abilitybool == true)
-        {
-            Instantiate(bullet, this.transform.position, Quaternion.identity);
-        }
-        //reload
-        if(reloadbool == true)
-        {
-            StartCoroutine(Reload());    
-        }
-        //ability timer
-        if(abilitybool==true&&cooldownbool == false)
-        {
-            abilitytime = abilitytime - Time.deltaTime;
-            if(abilitytime>0.0f)
+            if (bulletcount <= 0 && shootbool == true && infinteactive == false)
             {
-                timerimage.fillAmount = abilitytime / initabilitytimer;
+                shootbool = false;
+                reloadbool = true;
             }
-            else
+
+            //Shooting
+            if (Input.GetMouseButtonDown(0) && shootbool == true && infinteactive == false)
             {
-                cooldownbool = true;
-                abilitytime = initabilitytimer;
+                //Debug.Log(bulletcount);
+                Instantiate(bullet, this.transform.position, Quaternion.identity);
+                GameObject bulletIcon = GameObject.Find("bullet" + this.bulletcount);
+                bulletIcon.SetActive(false);
+                this.bulletcount -= 1;
+
             }
-            
-        }
-        
-        //activate ability
-        if(abilitybool == false && Input.GetMouseButtonDown(1)&&cooldownbool==false)
-         {
-            abilitybool = true;
-         }
-        if(cooldownbool == true && abilitybool == true)
-        {
-            StartCoroutine(Cooldown());
+            //infinite bullet shooting
+            else if (Input.GetMouseButtonDown(0) && infinteactive == true)
+            {
+                Instantiate(bullet, this.transform.position, Quaternion.identity);
+            }
+            //reload
+            if (reloadbool == true)
+            {
+                StartCoroutine(Reload());
+            }
+            //ability timer
+            if (infinteactive == true && infinitecooldownbool == false && infiniteshooterbool == true)
+            {
+                abilitytime = abilitytime - Time.deltaTime;
+                if (abilitytime > 0.0f)
+                {
+                    timerimage.fillAmount = abilitytime / initabilitytimer;
+                }
+                else
+                {
+                    infinitecooldownbool = true;
+                    abilitytime = initabilitytimer;
+                }
+
+            }
+
+            //activate ability
+            if (infinteactive == false && Input.GetMouseButtonDown(1) && infinitecooldownbool == false && infiniteshooterbool == true)
+            {
+                infinteactive = true;
+            }
+            if (infinitecooldownbool == true && infinteactive == true)
+            {
+                StartCoroutine(Cooldown());
+            }
+
+            //shadowclone 
+            if(shadowclonebool == true && shadowclonepressed == false && Input.GetMouseButtonDown(1))
+            {
+                shadowclonepressed = true;
+                shadowcloneactive = true;
+            }
+            if(shadowcloneactive == true && shadowclonepressed == true && shadowclonecooldown == false)
+            {
+                shadowclonetime = shadowclonetime - Time.deltaTime;
+                if(shadowclonetime > 0.0f)
+                {
+                    timerimage.fillAmount = shadowclonetime / initshadowclonetimer;
+                }
+                else
+                {
+                    shadowclonecooldown = true;
+                }
+            }
         }
     }
-
     IEnumerator Reload()
     {
         reloadbool = false;
@@ -177,10 +214,10 @@ public class Shooter : MonoBehaviour {
 
     IEnumerator Cooldown()
     {
-        abilitybool = false;
+        infinteactive = false;
         yield return new WaitForSeconds(cooldowntimer);
         timerimage.fillAmount = 1;
-        cooldownbool = false;
+        infinitecooldownbool = false;
     }
 
 

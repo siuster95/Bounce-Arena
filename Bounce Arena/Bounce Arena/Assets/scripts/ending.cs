@@ -17,26 +17,13 @@ public class ending : MonoBehaviour {
         text = GameObject.Find("Quittext").GetComponent<Text>();
         GameObject GMGO = GameObject.Find("GameManager");
         GM = GMGO.GetComponent<GameManager>();
-        Sroundarray = GameObject.FindGameObjectsWithTag("Sround");
-        Croundarray = GameObject.FindGameObjectsWithTag("Cround");
-        for(int x =0;x<Sroundarray.Length;x++)
-        {
-            Sroundarray[x].SetActive(false);
-        }
-        for(int z = 0;z<EC.Shooterwins;z++)
-        {
-            Sroundarray[z].SetActive(true);
-        }
-        for(int y =0;y<Croundarray.Length;y++)
-        {
-            Croundarray[y].SetActive(false);
-        }
-        for(int j =0;j<EC.Runnerwins;j++)
-        {
-            Croundarray[j].SetActive(true);
-        }
-        
-        
+        Sroundarray = new GameObject[3];
+        Croundarray = new GameObject[3];
+        //find them all and turn them false
+        this.setup();
+        //set the correct true
+        this.score();
+        //set the button to the condition of games won by each player
         if (EC.Runnerwins < 3 && EC.Shooterwins < 3)
         {
             text.text = "Continue";
@@ -66,6 +53,39 @@ public class ending : MonoBehaviour {
         GM.CoinNumber = 0;
         GM.Coinspawnbool = false;
         GM.Obstaclespawn = false;
+        GM.Threebool = true;
+        GM.Twobool = true;
+        GM.Onebool = true;
+        GM.Gobool = true;
         Application.LoadLevel("test");
+    }
+
+    public void setup()
+    {
+        for (int z = 0; z < 3; z++)
+        {
+
+            GameObject sround = GameObject.Find("Sround" +(z+1).ToString());
+            Sroundarray[z] = sround;
+            sround.SetActive(false);
+        }
+        for (int j = 0; j < 3; j++)
+        {
+            GameObject cround = GameObject.Find("Cround" + (j+1).ToString());
+            Croundarray[j] = cround;
+            cround.SetActive(false);
+        }
+    }
+
+    public void score()
+    {
+        for (int z = 0; z < EC.Shooterwins; z++)
+        {
+            Sroundarray[z].SetActive(true);
+        }
+        for (int j = 0; j < EC.Runnerwins; j++)
+        {
+            Croundarray[j].SetActive(true);
+        }
     }
 }

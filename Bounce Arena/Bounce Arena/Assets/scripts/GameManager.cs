@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
@@ -19,6 +20,20 @@ public class GameManager : MonoBehaviour {
     float ArenaWidth;
     [SerializeField]
     float ArenaHeight;
+    [SerializeField]
+    Sprite[] countdownsprites;
+    [SerializeField]
+    float countdowntime;
+    [SerializeField]
+    bool slowmo;
+    [SerializeField]
+    bool speedup;
+    [SerializeField]
+    bool blanks;
+    [SerializeField]
+    bool infiniteshooter;
+    [SerializeField]
+    bool shadowclones;
     private Vector3[] CoinsLocations;
     private Vector3[] CoinsLocations2;
     private Vector3[] CoinsLocations3;
@@ -34,11 +49,16 @@ public class GameManager : MonoBehaviour {
     private float Obstaclehalfwidth;
     private float NegativeObstaclehalfwidth;
     private float Coinradius;
-   
+    private float alpha;
     private float NegativeArenahalfheight;
     private float NegativeArenahalfwidth;
+    private float intervaltime;
     private int coinNumber;
     private bool coinspawnbool;
+    private bool threebool;
+    private bool twobool;
+    private bool onebool;
+    private bool gobool;
     private int amountofCoinsIcon;
     private int roundnumber;
     private bool obstaclespawn;
@@ -63,6 +83,8 @@ public class GameManager : MonoBehaviour {
         coinNumber = 0;
         amountofCoinsIcon = amountofCoins;
         coinspawnbool = false;
+        alpha = 1.0f;
+        intervaltime = countdowntime / 3;
         //fill up 5 arrays of both obstacles and coins
         ObstacleLocations = new Vector3[AmountofObstacle];
         ObstacleLocations2 = new Vector3[AmountofObstacle];
@@ -84,6 +106,11 @@ public class GameManager : MonoBehaviour {
         this.Makecoinloc(CoinsLocations3, ObstacleLocations3);
         this.Makecoinloc(CoinsLocations4, ObstacleLocations4);
         this.Makecoinloc(CoinsLocations5, ObstacleLocations5);
+        //initilize number bools
+        threebool = true;
+        twobool = true;
+        onebool = true;
+        gobool = true;
         //initilize the round
         roundnumber = 1;
         obstaclespawn = false;
@@ -96,6 +123,7 @@ public class GameManager : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        //make obstacles
         if (Application.loadedLevelName == "test" && obstaclespawn == false)
         {
             if (roundnumber == 1)
@@ -139,7 +167,68 @@ public class GameManager : MonoBehaviour {
                 }
             }
         }
+        
+        //timercountdown animation
+        if(threebool == true && Application.loadedLevelName == "test")
+        {
+            Image image = GameObject.Find("CountdownImage").GetComponent<Image>();
+            image.sprite = this.countdownsprites[0];
+            intervaltime = intervaltime - Time.deltaTime;
+            alpha =   intervaltime / (countdowntime / 3);
+            image.color = new Color(0.0f, 0.0f, 0.0f, alpha);
+            if(intervaltime<=0.0f)
+            {
+                intervaltime = countdowntime / 3;
+                threebool = false;
+                alpha = 1.0f;
+            }
+        }
 
+        else if (threebool == false && twobool == true && Application.loadedLevelName == "test")
+        {
+            Image image = GameObject.Find("CountdownImage").GetComponent<Image>();
+            image.sprite = this.countdownsprites[1];
+            intervaltime = intervaltime - Time.deltaTime;
+            alpha =  intervaltime/ (countdowntime / 3);
+            image.color = new Color(0.0f, 0.0f, 0.0f, alpha);
+            if (intervaltime <= 0.0f)
+            {
+                intervaltime = countdowntime / 3;
+                twobool = false;
+                alpha = 1.0f;
+            }
+        }
+
+        else if (threebool == false && twobool == false && onebool == true && Application.loadedLevelName == "test")
+        {
+            Image image = GameObject.Find("CountdownImage").GetComponent<Image>();
+            image.sprite = this.countdownsprites[2];
+            intervaltime = intervaltime - Time.deltaTime;
+            alpha =  intervaltime/ (countdowntime / 3);
+            image.color = new Color(0.0f, 0.0f, 0.0f, alpha);
+            if (intervaltime <= 0.0f)
+            {
+                intervaltime = countdowntime / 3;
+                onebool = false;
+                alpha = 1.0f;
+            }
+        }
+
+        else if (threebool == false && twobool == false && onebool == false && gobool == true && Application.loadedLevelName == "test")
+        {
+            Image image = GameObject.Find("CountdownImage").GetComponent<Image>();
+            image.sprite = this.countdownsprites[3];
+            intervaltime = intervaltime - Time.deltaTime;
+            alpha = intervaltime / (countdowntime / 3);
+            image.color = new Color(0.0f, 0.0f, 0.0f, alpha);
+            if (intervaltime <= 0.0f)
+            {
+                intervaltime = countdowntime / 3;
+                gobool = false;
+                alpha = 1.0f;
+            }
+        }
+        //handle coin spawnage
         if (Application.loadedLevelName == "test")
         {
             if (roundnumber == 1)
@@ -493,6 +582,12 @@ public class GameManager : MonoBehaviour {
         }
         
         }
+
+    private IEnumerator second(bool waitbool)
+    {
+        yield return new WaitForSeconds(1);
+        waitbool = false;
+    }
         public bool Coinspawnbool
         {
             get
@@ -556,6 +651,110 @@ public class GameManager : MonoBehaviour {
         set
         {
             obstaclespawn = value;
+        }
+    }
+    public bool Threebool
+    {
+        get
+        {
+            return threebool;
+        }
+        set
+        {
+            threebool = value;
+        }
+    }
+
+    public bool Twobool
+    {
+        get
+        {
+            return twobool;
+        }
+        set
+        {
+            twobool = value;
+        }
+    }
+
+    public bool Onebool
+    {
+        get
+        {
+            return onebool;
+        }
+        set
+        {
+            onebool = value;
+        }
+    }
+
+    public bool Gobool
+    {
+        get
+        {
+            return gobool;
+        }
+        set
+        {
+            gobool = value;
+        }
+    }
+
+    public bool Slowmo
+    {
+        get
+        {
+            return slowmo;
+        }
+        set
+        {
+            slowmo = value;
+        }
+    }
+    public bool Speedup
+    {
+        get
+        {
+            return speedup;
+        }
+        set
+        {
+            speedup = value;
+        }
+    }
+
+    public bool Blanks
+    {
+        get
+        {
+            return blanks;
+        }
+        set
+        {
+            blanks = value;
+        }
+    }
+    public bool Shadowclones
+    {
+        get
+        {
+            return shadowclones;
+        }
+        set
+        {
+            shadowclones = value;
+        }
+    }
+    public bool InfiniteShooter
+    {
+        get
+        {
+            return infiniteshooter;
+        }
+        set
+        {
+            infiniteshooter = value;
         }
     }
 }

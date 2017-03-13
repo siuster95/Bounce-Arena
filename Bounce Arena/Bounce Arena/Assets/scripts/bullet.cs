@@ -145,6 +145,18 @@ public class bullet : MonoBehaviour {
         }
     }
 
+    public float Speed
+    {
+        get
+        {
+            return speed;
+        }
+        set
+        {
+            speed = value;
+        }
+    }
+
 
 }
 

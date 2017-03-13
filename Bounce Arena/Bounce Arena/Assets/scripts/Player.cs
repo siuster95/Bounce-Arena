@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
 
@@ -18,11 +19,19 @@ public class Player : MonoBehaviour {
     [SerializeField]
     float waitsecondsreload;
     [SerializeField]
+    float slowmotimer;
+    [SerializeField]
+    float slowmoreloadtimer;
+    [SerializeField]
     float speedincrease;
     private bool leftbool;
     private bool rightbool;
     private bool upbool;
     private bool downbool;
+    private bool slowmo;
+    private bool slowmostartbool;
+    private bool slowmoreloadbool;
+    private bool slowmobuttonbool;
     private Vector3 movementvector;
     private float halfwidth;
     private float halfheight;
@@ -36,8 +45,12 @@ public class Player : MonoBehaviour {
     GameObject[] speedboostcounters;
     private float speednormal;
     private bool speedboostbool;
-	// Use this for initialization
-	void Start () {
+    private bool speedupbool;
+    private float slowmonormaltime;
+    private bool blank;
+    private float blankcount;
+    // Use this for initialization
+    void Start () {
         leftbool = false;
         rightbool=false;
         upbool = false ;
@@ -50,18 +63,49 @@ public class Player : MonoBehaviour {
         speedboostcounters = GameObject.FindGameObjectsWithTag("speedcounter");
         GameManager = GameManagerGO.GetComponent<GameManager>();
         coinposition = GameManager.CoinLocationsg;
+        slowmo = GameManager.Slowmo;
+        slowmonormaltime = slowmotimer;
+        blank = GameManager.Blanks;
+        speedupbool = GameManager.Speedup;
+        slowmoreloadbool = false;
+        slowmostartbool = false;
+        slowmobuttonbool = true;
         speednormal = speed;
         speedboostbool = true;
         reloadbool = false;
-    }
-	
-	// Update is called once per frame
-	void Update () {
-
-        if(hp<=0)
+        blankcount = 2;
+        if (speedupbool == true)
         {
-            Application.Quit();
+            GameObject GO = GameObject.Find("Speedbar");
+            GO.SetActive(true);
+            GO = GameObject.Find("PlayertimerBar");
+            GO.SetActive(false);
+            GO = GameObject.Find("BlankBar");
+            GO.SetActive(false);
         }
+        if (slowmo == true)
+        {
+            GameObject GO = GameObject.Find("PlayertimerBar");
+            GO.SetActive(true);
+            GO = GameObject.Find("Speedbar");
+            GO.SetActive(false);
+            GO = GameObject.Find("BlankBar");
+            GO.SetActive(false);
+        }
+        if(blank == true)
+        {
+            GameObject GO = GameObject.Find("BlankBar");
+            GO.SetActive(true);
+            GO = GameObject.Find("Speedbar");
+            GO.SetActive(false);
+            GO = GameObject.Find("PlayertimerBar");
+            GO.SetActive(false);
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
         //starting values
         position = this.transform.position;
         movementvector = Vector3.zero;
@@ -69,75 +113,107 @@ public class Player : MonoBehaviour {
         upbool = Input.GetKey(KeyCode.W);
         rightbool = Input.GetKey(KeyCode.D);
         downbool = Input.GetKey(KeyCode.S);
-        leftprediction = Mathf.Abs((position.x - halfradius-arena.borderwidth) - speed);
+        leftprediction = Mathf.Abs((position.x - halfradius - arena.borderwidth) - speed);
         rightprediction = Mathf.Abs((position.x + halfradius + arena.borderwidth) + speed);
         upprediction = Mathf.Abs((position.y + halfradius + arena.borderwidth) + speed);
         downprediction = Mathf.Abs((position.y - halfradius - arena.borderwidth) - speed);
         ObstaclesArray = GameObject.FindObjectsOfType<Obstacle>();
-        //check to see if we are getting to left edge, if we are far away enough, add in the left direction
-        if (leftbool && leftprediction < halfwidth)
+        
+        if (GameManager.Gobool == false)
         {
-            movementvector.x -= speed;
-        }
-        //check to see if we are getting to left edge, if we are close enough that adding default speed will go over,calculate the distance needed and add in the left direction
-        else if (leftbool && leftprediction > halfwidth)
-        {
-            movementvector.x -= Mathf.Abs((halfwidth - arena.borderwidth - halfradius) + position.x); 
-        }
-        //check to see if we are getting to right edge, if we are far away enough, add in the right direction
-        if (rightbool && rightprediction < halfwidth)
-        {
-            movementvector.x += speed;
-        }
-        //check to see if we are getting to right edge, if we are close enough that adding default speed will go over,calculate the distance needed and add in the right direction
-        else if (rightbool && rightprediction > halfwidth)
-        {
-            movementvector.x += Mathf.Abs((halfwidth - arena.borderwidth - halfradius) - position.x);
-        }
-        //check to see if we are getting to top edge, if we are far away enough, add in the up direction
-        if (upbool && upprediction < halfheight)
-        {
-            movementvector.y += speed;
-        }
-        //check to see if we are getting to top edge, if we are close enough that adding default speed will go over,calculate the distance needed and add in the up direction
-        else if (upbool && upprediction > halfheight)
-        {
-            movementvector.y += Mathf.Abs((halfheight - arena.borderwidth - halfradius) - position.y);
-        }
-        //check to see if we are getting to bottom edge, if we are far away enough, add in the down direction
-        if (downbool && downprediction < halfheight)
-        {
-            movementvector.y -= speed;
-        }
-        //check to see if we are getting to bottom edge, if we are close enough that adding default speed will go over,calculate the distance needed and add in the down direction
-        else if (downbool && downprediction > halfheight)
-        {
-            movementvector.y -= Mathf.Abs((halfheight - arena.borderwidth - halfradius) + position.y);
-        }
-        movementvector = this.ObstacleCheck(movementvector);
-        this.gameObject.transform.position += movementvector;
-        //see if we are colliding with a coin 
-        this.Coinhit();
-        if (speedboostcounter == 0 && reloadbool == false && speedboostbool == true)
-        {
-            reloadbool = true;
-            speedboostbool = false;
-        }
-        if ( Input.GetKeyDown(KeyCode.Space))
-        {
-            if (this.speedboostbool == true && speedboostcounter > 0)
+            //check to see if we are getting to left edge, if we are far away enough, add in the left direction
+            if (leftbool && leftprediction < halfwidth)
             {
-                StartCoroutine(Speedboost());
+                movementvector.x -= speed;
             }
-        }
-        if(reloadbool == true && speedboostbool == false)
-        {
-            reloadbool = false;
-            StartCoroutine(speedboostreload());
-        }
-        Debug.Log(speedboostcounter);
-    }
+            //check to see if we are getting to left edge, if we are close enough that adding default speed will go over,calculate the distance needed and add in the left direction
+            else if (leftbool && leftprediction > halfwidth)
+            {
+                movementvector.x -= Mathf.Abs((halfwidth - arena.borderwidth - halfradius) + position.x);
+            }
+            //check to see if we are getting to right edge, if we are far away enough, add in the right direction
+            if (rightbool && rightprediction < halfwidth)
+            {
+                movementvector.x += speed;
+            }
+            //check to see if we are getting to right edge, if we are close enough that adding default speed will go over,calculate the distance needed and add in the right direction
+            else if (rightbool && rightprediction > halfwidth)
+            {
+                movementvector.x += Mathf.Abs((halfwidth - arena.borderwidth - halfradius) - position.x);
+            }
+            //check to see if we are getting to top edge, if we are far away enough, add in the up direction
+            if (upbool && upprediction < halfheight)
+            {
+                movementvector.y += speed;
+            }
+            //check to see if we are getting to top edge, if we are close enough that adding default speed will go over,calculate the distance needed and add in the up direction
+            else if (upbool && upprediction > halfheight)
+            {
+                movementvector.y += Mathf.Abs((halfheight - arena.borderwidth - halfradius) - position.y);
+            }
+            //check to see if we are getting to bottom edge, if we are far away enough, add in the down direction
+            if (downbool && downprediction < halfheight)
+            {
+                movementvector.y -= speed;
+            }
+            //check to see if we are getting to bottom edge, if we are close enough that adding default speed will go over,calculate the distance needed and add in the down direction
+            else if (downbool && downprediction > halfheight)
+            {
+                movementvector.y -= Mathf.Abs((halfheight - arena.borderwidth - halfradius) + position.y);
+            }
+            movementvector = this.ObstacleCheck(movementvector);
+            this.gameObject.transform.position += movementvector;
+            //see if we are colliding with a coin 
+            this.Coinhit();
+            if (speedboostcounter == 0 && reloadbool == false && speedboostbool == true)
+            {
+                reloadbool = true;
+                speedboostbool = false;
+            }
+            if (Input.GetKeyDown(KeyCode.Space) && this.speedupbool == true)
+            {
+                if (this.speedboostbool == true && speedboostcounter > 0)
+                {
+                    StartCoroutine(Speedboost());
+                }
+            }
 
+            if(Input.GetKeyDown(KeyCode.Space) && this.slowmo == true && this.slowmobuttonbool == true)
+            {
+                this.slowmobuttonbool = false;
+                this.slowmostartbool = true;
+            }
+
+            if(slowmoreloadbool == true && slowmostartbool == false)
+            {
+                slowmoreloadbool = false;
+                StartCoroutine(slowmoreload());
+            }
+            if (reloadbool == true && speedboostbool == false)
+            {
+                reloadbool = false;
+                StartCoroutine(speedboostreload());
+            }
+            if(this.slowmostartbool == true && slowmoreloadbool == false)
+            {
+                this.slowmoactive();
+            }
+            if (this.slowmostartbool == false && slowmoreloadbool == true)
+            {
+                this.bulletspeedup();
+            }
+
+            if(Input.GetKeyDown(KeyCode.Space) && blank == true)
+            {
+                if(blankcount>0)
+                {
+                    this.Blanksaway();
+                }
+            }
+
+            //Debug.Log(speedboostcounter);
+        }
+    }
     public void Coinhit()
     {
 
@@ -266,6 +342,65 @@ public class Player : MonoBehaviour {
             speedboostcounters[x].SetActive(true);
         }
     }
+    IEnumerator slowmoreload()
+    {
+        yield return new WaitForSeconds(slowmoreloadtimer);
+        slowmostartbool = false;
+        slowmoreloadbool = false;
+        slowmobuttonbool = true;
+        slowmotimer = slowmonormaltime;
+        GameObject PTGO = GameObject.Find("Playertimer");
+        Image timerbar = PTGO.GetComponent<Image>();
+        timerbar.fillAmount = 1;
+    }
+    public void slowmoactive()
+    {
+        if(slowmotimer >0)
+        {
+            GameObject[] GObulletlist = GameObject.FindGameObjectsWithTag("bulletactive");
+            for(int x=0;x<GObulletlist.Length;x++)
+            {
+                bullet bchange = GObulletlist[x].GetComponent<bullet>();
+                bchange.Speed = .1f;
+            }
+            slowmotimer -= Time.deltaTime;
+            slowmotimerchange();
+        }
+        else
+        {
+            slowmoreloadbool = true;
+            slowmostartbool = false;
+        }
+    }
+    public void bulletspeedup()
+    {
+        GameObject[] GObulletlist = GameObject.FindGameObjectsWithTag("bulletactive");
+        for (int x = 0; x < GObulletlist.Length; x++)
+        {
+            bullet bchange = GObulletlist[x].GetComponent<bullet>();
+            bchange.Speed = .2f;
+        }
+    }
+    public void slowmotimerchange()
+    {
+        GameObject PTGO = GameObject.Find("Playertimer");
+        Image timerbar = PTGO.GetComponent<Image>();
+        float value = slowmotimer / slowmonormaltime;
+        timerbar.fillAmount = value;
+    }
+
+    public void Blanksaway()
+    {
+        GameObject BGO = GameObject.Find("Blank" + blankcount);
+        BGO.SetActive(false);
+        GameObject[] BAGO = GameObject.FindGameObjectsWithTag("bulletactive");
+        foreach (GameObject baGO in BAGO)
+        {
+            Destroy(baGO);
+        }
+        blankcount -= 1;
+    }
+
     public float Radius
     {
         get
