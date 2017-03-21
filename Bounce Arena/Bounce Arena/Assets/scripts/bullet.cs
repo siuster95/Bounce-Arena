@@ -4,21 +4,21 @@ using System.Collections.Generic;
 public class bullet : MonoBehaviour {
 
     [SerializeField]
-    float speed;
+    protected float speed;
     [SerializeField]
-    float radius;
+    protected float radius;
     [SerializeField]
-    float width;
+    protected float width;
     [SerializeField]
-    float height;
-    Vector3 direction;
-    bool infield;
-    float left, right, top, bottom;
-    int bounce;
-    Obstacle[] ObstacleList;
-    Arena arena;
+    protected float height;
+    protected Vector3 direction;
+    protected bool infield;
+    protected float left, right, top, bottom;
+    protected int bounce;
+    protected Obstacle[] ObstacleList;
+    protected Arena arena;
 	// Use this for initialization
-	void Start ()
+	protected virtual void Start ()
     {
         GameObject ShooterObject = GameObject.Find("Shooter_test");
         Shooter shooter = ShooterObject.GetComponent<Shooter>();
@@ -35,7 +35,7 @@ public class bullet : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update ()
+	protected virtual void Update ()
     {
         this.transform.position += direction * speed;
         //turn true when it is in the field
@@ -83,7 +83,7 @@ public class bullet : MonoBehaviour {
         }
 	}
 
-    public void bounceOffobstacle()
+    protected void bounceOffobstacle()
     {
         for(int x =0;x<ObstacleList.Length;x++)
         {
@@ -131,7 +131,7 @@ public class bullet : MonoBehaviour {
         }
     }
 
-    public void hitplayer()
+    protected void hitplayer()
     {
         GameObject playerGO = GameObject.Find("Player_test");
         Player player = playerGO.GetComponent<Player>();

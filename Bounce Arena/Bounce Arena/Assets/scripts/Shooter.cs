@@ -15,25 +15,31 @@ public class Shooter : MonoBehaviour {
     [SerializeField]
     GameObject bullet;
     [SerializeField]
+    GameObject Clone;
+    [SerializeField]
     float initabilitytimer;
     [SerializeField]
     float initshadowclonetimer;
     [SerializeField]
+    float initshadowclonecooldown;
+    [SerializeField]
     GameObject timer;
     [SerializeField]
     float cooldowntimer;
-    Vector3 loc1, loc2, loc3, loc4,offset,mousepos;
-    bool bool1, bool2, bool3, bool4,shootbool,reloadbool,infiniteshooterbool,infinteactive,infinitecooldownbool,shadowclonebool,shadowclonepressed,shadowcloneactive,shadowclonecooldown;
+    Vector3 loc1, loc2, loc3, loc4;
+    protected Vector3 mousepos, offset;
+
     int bulletcount;
     [SerializeField]
-    int waitseconds;
+    int reloadtime;
     int position;
     GameObject[] bullets;
     private Image timerimage;
-    float abilitytime,shadowclonetime;
+    protected bool bool1, bool2, bool3, bool4, shootbool, reloadbool, infiniteshooterbool, infinteactive, infinitecooldownbool, shadowclonebool, shadowclonepressed, shadowcloneactive, shadowclonecooldown;
+    protected float abilitytime,shadowclonetime,shadowclonecooldowntime;
     GameManager GM;
     // Use this for initialization
-    void Start ()
+    protected virtual void Start ()
     {
         loc1 = place1.transform.position;
         loc2 = place2.transform.position;
@@ -59,6 +65,7 @@ public class Shooter : MonoBehaviour {
         shadowcloneactive = false;
         shadowclonecooldown = false;
         shadowclonetime = initshadowclonetimer;
+        shadowclonecooldowntime = initshadowclonecooldown;
         infiniteshooterbool = GM.InfiniteShooter;
         infinteactive = false;
         infinitecooldownbool = false;
@@ -66,7 +73,7 @@ public class Shooter : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update()
+   protected virtual void Update()
     {
         if (GM.Gobool == false)
         {
@@ -179,12 +186,47 @@ public class Shooter : MonoBehaviour {
             }
 
             //shadowclone 
-            if(shadowclonebool == true && shadowclonepressed == false && Input.GetMouseButtonDown(1))
+
+            //see if it was pressed
+            if(shadowclonebool == true && shadowclonepressed == false && shadowclonecooldown == false && Input.GetMouseButtonDown(1))
             {
                 shadowclonepressed = true;
                 shadowcloneactive = true;
             }
-            if(shadowcloneactive == true && shadowclonepressed == true && shadowclonecooldown == false)
+            
+            //when pressed, spawn clones
+            if(shadowclonepressed == true && shadowcloneactive == true)
+            {
+                //look at position and spawn others at other points
+                if(position == 1)
+                {
+                    Instantiate(Clone, loc2, Quaternion.identity);
+                    Instantiate(Clone, loc3, Quaternion.identity);
+                    Instantiate(Clone, loc4, Quaternion.identity);
+                }
+                else if(position == 2)
+                {
+                    Instantiate(Clone, loc1, Quaternion.identity);
+                    Instantiate(Clone, loc3, Quaternion.identity);
+                    Instantiate(Clone, loc4, Quaternion.identity);
+                }
+                else if(position == 3)
+                {
+                    Instantiate(Clone, loc1, Quaternion.identity);
+                    Instantiate(Clone, loc2, Quaternion.identity);
+                    Instantiate(Clone, loc4, Quaternion.identity);
+                }
+                else if(position == 4)
+                {
+                    Instantiate(Clone, loc1, Quaternion.identity);
+                    Instantiate(Clone, loc2, Quaternion.identity);
+                    Instantiate(Clone, loc3, Quaternion.identity);
+                }
+                shadowclonepressed = false;
+            }
+
+            //if it was pressed, make the ability active and timer count down
+            if(shadowcloneactive == true  && shadowclonecooldown == false)
             {
                 shadowclonetime = shadowclonetime - Time.deltaTime;
                 if(shadowclonetime > 0.0f)
@@ -194,15 +236,42 @@ public class Shooter : MonoBehaviour {
                 else
                 {
                     shadowclonecooldown = true;
+                    shadowcloneactive = false;
+                    shadowclonetime = initshadowclonetimer;
+
+                    //destroy clones
+                    GameObject[] Clonedestory = GameObject.FindGameObjectsWithTag("Clone");
+                    for(int x =0;x<Clonedestory.Length;x++)
+                    {
+                        Destroy(Clonedestory[x]);
+                    }
+                }
+            }
+            //cooldown of shadowclone
+            if(shadowclonecooldown == true)
+            {
+                //make a countdown appear
+                shadowclonecooldowntime = shadowclonecooldowntime - Time.deltaTime;
+                //if it reaches zero,reset the timer and bools and make timer bar go back up 
+                if (shadowclonecooldowntime<=0.0f)
+                {
+                    //bools
+                    shadowclonecooldown = false;
+                    shadowclonepressed = false;
+                    //timer
+                    shadowclonecooldowntime = initshadowclonecooldown;
+                    //timer bar 
+                    timerimage.fillAmount = 1;
                 }
             }
         }
     }
+
     IEnumerator Reload()
     {
         reloadbool = false;
         //Debug.Log("reloading");
-        yield return new WaitForSeconds(waitseconds);
+        yield return new WaitForSeconds(reloadtime);
         //Debug.Log("finished reloading");
         shootbool = true;
         bulletcount = 6;
@@ -212,7 +281,7 @@ public class Shooter : MonoBehaviour {
         }
     }
 
-    IEnumerator Cooldown()
+     IEnumerator Cooldown()
     {
         infinteactive = false;
         yield return new WaitForSeconds(cooldowntimer);
@@ -220,5 +289,37 @@ public class Shooter : MonoBehaviour {
         infinitecooldownbool = false;
     }
 
+    //getters
 
+    public bool Shootbool
+    {
+        get
+        {
+            return shootbool;
+        }
+    }
+
+    public float Abilitytime
+    {
+        get
+        {
+            return abilitytime;
+        }
+    }
+
+    public bool Reloadbool
+    {
+        get
+        {
+            return reloadbool;
+        }
+    }
+
+    public bool Infiniteactive
+    {
+        get
+        {
+            return infinteactive;
+        }
+    }
 }

@@ -70,12 +70,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\scripts\Arena.cs" />
+    <Compile Include="Assets\scripts\Clone.cs" />
     <Compile Include="Assets\scripts\GameManager.cs" />
     <Compile Include="Assets\scripts\OAmanager.cs" />
     <Compile Include="Assets\scripts\Obstacle.cs" />
     <Compile Include="Assets\scripts\Player.cs" />
     <Compile Include="Assets\scripts\Shooter.cs" />
     <Compile Include="Assets\scripts\bullet.cs" />
+    <Compile Include="Assets\scripts\bulletClone.cs" />
     <Compile Include="Assets\scripts\coin.cs" />
     <Compile Include="Assets\scripts\ending.cs" />
     <Compile Include="Assets\scripts\endingcarriar.cs" />
